@@ -1,0 +1,23 @@
+{
+  "eventType": "RECALL_OPENED",
+  "occurredAt": { "$date": "2026-10-31T12:00:00.000Z" },
+  "actor": {
+    "userId": "quality-user-01",
+    "role": "QUALITY_MANAGER"
+  },
+  "entity": {
+    "type": "production_batch",
+    "mysqlId": 1
+  },
+  "references": {
+    "recallId": 1,
+    "shipmentId": null,
+    "supplierId": 1
+  },
+  "details": {
+    "recallNo": "RN-DEMO-001",
+    "affectedQuantity": 500.0,
+    "reason": "Example audit event; replace with the action details supplied by the application"
+  },
+  "requestId": "example-request-0001"
+}
