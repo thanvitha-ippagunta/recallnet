@@ -1,0 +1,18 @@
+# Local secrets and machine-specific settings
+/web/.env.local
+/web/.env.*
+!/web/.env.example
+
+# Local dependencies and build output
+/web/node_modules/
+/web/.next/
+/web/*.tsbuildinfo
+
+# Local bootstrap artifacts and private handover exports
+/work/
+/handover/
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+*.log
