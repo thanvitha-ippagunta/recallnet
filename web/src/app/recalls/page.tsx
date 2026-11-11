@@ -33,7 +33,11 @@ export default async function RecallsPage() {
     }),
     "recalls:read",
   );
-  if (!auth.authorized) redirect("/login");
+  if (!auth.authorized) {
+    if (auth.response.status === 401) redirect("/login");
+    if (auth.response.status >= 500) throw new Error("Recall access could not be checked.");
+    redirect("/");
+  }
 
   let recalls: RecallRow[] = [];
   let batches: BatchOption[] = [];

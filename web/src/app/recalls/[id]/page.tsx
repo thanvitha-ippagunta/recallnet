@@ -53,7 +53,11 @@ export default async function RecallDetailPage({ params }: { params: Promise<{ i
     }),
     "recalls:read",
   );
-  if (!auth.authorized) redirect("/login");
+  if (!auth.authorized) {
+    if (auth.response.status === 401) redirect("/login");
+    if (auth.response.status >= 500) throw new Error("Recall access could not be checked.");
+    redirect("/");
+  }
 
   const [recallRows] = await mysqlPool.execute<RecallRow[]>(
     `SELECT recall_id, recall_no, reason, initiated_at, initiated_by, status, description

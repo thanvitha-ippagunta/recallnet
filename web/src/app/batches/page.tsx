@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import type { RowDataPacket } from "mysql2";
 import AppShell from "@/components/app-shell";
+import { hasPermission } from "@/lib/auth/roles";
 import { authorizePermission, SESSION_COOKIE_NAME } from "@/lib/auth/session";
 import { mysqlPool } from "@/lib/db/mysql";
 
@@ -32,7 +33,11 @@ export default async function BatchesPage({ searchParams }: Props) {
     }),
     "batches:read",
   );
-  if (!auth.authorized) redirect("/login");
+  if (!auth.authorized) {
+    if (auth.response.status === 401) redirect("/login");
+    if (auth.response.status >= 500) throw new Error("Batch access could not be checked.");
+    redirect("/");
+  }
 
   const search = (params.search ?? "").trim().slice(0, 120);
   const requestedStatus = (params.status ?? "").trim().toUpperCase();
@@ -80,6 +85,7 @@ export default async function BatchesPage({ searchParams }: Props) {
 
   const pageLink = (nextPage: number) =>
     `/batches?search=${encodeURIComponent(search)}&status=${encodeURIComponent(status)}&page=${nextPage}`;
+  const canTrace = hasPermission(auth.user.role, "traceability:read");
 
   return (
     <AppShell active="batches" user={auth.user}>
@@ -113,7 +119,11 @@ export default async function BatchesPage({ searchParams }: Props) {
           <tbody>
             {!loadFailed && rows.map((batch) => (
               <tr key={batch.prod_batch_id}>
-                <td><Link className="batch-link" href={`/batches/${batch.prod_batch_id}`}>{batch.batch_no}</Link></td>
+                <td>
+                  {canTrace
+                    ? <Link className="batch-link" href={`/batches/${batch.prod_batch_id}`}>{batch.batch_no}</Link>
+                    : batch.batch_no}
+                </td>
                 <td>{batch.product_name}</td>
                 <td>{String(batch.mfg_date).slice(0, 10)}</td>
                 <td>{String(batch.exp_date).slice(0, 10)}</td>

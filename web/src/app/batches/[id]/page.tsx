@@ -34,7 +34,11 @@ export default async function BatchDetailPage({ params }: { params: Promise<{ id
     }),
     "traceability:read",
   );
-  if (!auth.authorized) redirect("/login");
+  if (!auth.authorized) {
+    if (auth.response.status === 401) redirect("/login");
+    if (auth.response.status >= 500) throw new Error("Traceability access could not be checked.");
+    redirect("/");
+  }
 
   const batch = await loadBatchCore(id);
   if (!batch) notFound();

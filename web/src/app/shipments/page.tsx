@@ -50,7 +50,16 @@ export default async function ShipmentsPage() {
     : downstreamAuth?.authorized
       ? downstreamAuth.user
       : null;
-  if (!user) redirect("/login");
+  if (!user) {
+    const failureStatus = downstreamAuth && !downstreamAuth.authorized
+      ? downstreamAuth.response.status
+      : !warehouseAuth.authorized
+        ? warehouseAuth.response.status
+        : 500;
+    if (failureStatus === 401) redirect("/login");
+    if (failureStatus >= 500) throw new Error("Shipment access could not be checked.");
+    redirect("/");
+  }
 
   const isDistributor = user.role === "DISTRIBUTOR";
   const isWarehouseManager = user.role === "WAREHOUSE_MANAGER";

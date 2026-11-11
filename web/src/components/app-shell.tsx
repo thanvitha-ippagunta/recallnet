@@ -1,12 +1,13 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { hasPermission, type Role } from "@/lib/auth/roles";
 import LogoutButton from "./logout-button";
 
 type WorkspaceSection = "overview" | "batches" | "recalls" | "shipments";
 
 type WorkspaceUser = {
   email: string;
-  role: string;
+  role: Role;
 };
 
 const navigation: { href: string; label: string; icon: string; section: WorkspaceSection }[] = [
@@ -26,6 +27,13 @@ export default function AppShell({
   children: ReactNode;
 }) {
   const section = navigation.find((item) => item.section === active)?.label ?? "Overview";
+  const visibleNavigation = navigation.filter((item) => {
+    if (item.section === "overview") return hasPermission(user.role, "dashboard:read");
+    if (item.section === "batches") return hasPermission(user.role, "batches:read");
+    if (item.section === "recalls") return hasPermission(user.role, "recalls:read");
+    return hasPermission(user.role, "warehouse-shipments:read")
+      || hasPermission(user.role, "assigned-shipments:read");
+  });
 
   return (
     <main className="shell">
@@ -39,7 +47,7 @@ export default function AppShell({
         </Link>
         <div className="side-label">WORKSPACE</div>
         <nav aria-label="Workspace" className="side-nav">
-          {navigation.map((item) => (
+          {visibleNavigation.map((item) => (
             <Link
               aria-current={active === item.section ? "page" : undefined}
               aria-label={item.label}

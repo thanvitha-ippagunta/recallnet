@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import type { RowDataPacket } from "mysql2";
 import { mysqlPool } from "@/lib/db/mysql";
 import { SESSION_COOKIE_NAME, getSessionUser } from "@/lib/auth/session";
+import { hasPermission } from "@/lib/auth/roles";
 import AppShell from "@/components/app-shell";
 
 export const instant = false;
@@ -49,8 +50,13 @@ export default async function Home() {
   const request = new Request("http://recallnet.local/", {
     headers: token ? { cookie: `${SESSION_COOKIE_NAME}=${token}` } : {},
   });
-  const user = await getSessionUser(request).catch(() => null);
+  const user = await getSessionUser(request);
   if (!user) redirect("/login");
+  if (!hasPermission(user.role, "dashboard:read")) {
+    if (hasPermission(user.role, "batches:read")) redirect("/batches");
+    if (hasPermission(user.role, "assigned-shipments:read")) redirect("/shipments");
+    redirect("/login");
+  }
 
   const [summaryResult, batchResult, recallResult] = await Promise.allSettled([
     mysqlPool.execute<SummaryRow[]>(
