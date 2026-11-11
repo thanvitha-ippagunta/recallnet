@@ -1,0 +1,152 @@
+.logout-control {
+  position: relative;
+}
+
+.logout:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.logout-error {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: 0;
+  z-index: 2;
+  width: max-content;
+  max-width: min(260px, 75vw);
+  padding: 8px 10px;
+  border: 1px solid #f1c7c3;
+  border-radius: 6px;
+  background: #fff0ef;
+  color: #ab5149;
+  font-size: 11px;
+}
+
+.trace-form h2 {
+  margin: 0 0 14px;
+  font-size: 17px;
+}
+
+.trace-form select,
+.trace-form textarea {
+  width: 100%;
+  border: 1px solid #dfe5ea;
+  border-radius: 6px;
+  background: #fff;
+  color: var(--ink);
+  padding: 10px 11px;
+  font: inherit;
+  font-size: 12px;
+}
+
+.trace-form textarea {
+  resize: vertical;
+}
+
+.trace-form select:focus,
+.trace-form textarea:focus {
+  border-color: #65b9ae;
+  outline: 3px solid #65b9ae22;
+}
+
+.trace-form button:disabled,
+.primary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.recall-form-wrap {
+  max-width: 540px;
+  margin-bottom: 28px;
+}
+
+.recall-batch {
+  margin-bottom: 24px;
+}
+
+.downstream-heading {
+  margin-top: 28px;
+}
+
+.form-help {
+  color: #8995a2;
+  font-size: 11px;
+}
+
+.empty-panel {
+  padding: 24px;
+  border: 1px dashed #d5dde4;
+  border-radius: 8px;
+  color: #738094;
+  text-align: center;
+}
+
+.loading-shell,
+.error-shell {
+  min-height: 100vh;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 12px;
+  padding: 24px;
+  background: var(--paper);
+  color: var(--ink);
+  text-align: center;
+}
+
+.loading-shell {
+  grid-auto-flow: column;
+  justify-content: center;
+  color: #607084;
+  font-size: 13px;
+}
+
+.loading-indicator {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #cfe3e0;
+  border-top-color: #21877c;
+  border-radius: 50%;
+  animation: recallnet-spin 0.8s linear infinite;
+}
+
+.error-shell h1 {
+  margin: 0;
+  font-size: clamp(23px, 4vw, 34px);
+}
+
+.error-shell .subhead {
+  max-width: 480px;
+}
+
+@keyframes recallnet-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-indicator { animation-duration: 2.5s; }
+}
+
+@media (max-width: 640px) {
+  .search-row {
+    flex-wrap: wrap;
+  }
+
+  .search-row input {
+    min-width: 100%;
+  }
+
+  .search-row select {
+    flex: 1;
+  }
+
+  .recall-form-wrap {
+    max-width: none;
+  }
+
+  .logout-error {
+    position: fixed;
+    top: 62px;
+    right: 12px;
+  }
+}
