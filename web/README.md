@@ -18,6 +18,7 @@ RecallNet is a supply-chain traceability and product-recall demonstration. MySQL
 ## Included application features
 
 - Secure server-side sessions, login/logout, CSRF checks, rate limiting and four roles.
+- A shared, responsive operations workspace with route-aware navigation, sign-out feedback, loading states and a retry screen for page failures.
 - Batch search, production detail, upstream supplier/material trace and downstream movement timeline.
 - Dashboard summary and recall impact views.
 - Recall opening through the transactional `sp_open_recall` procedure.
@@ -25,6 +26,18 @@ RecallNet is a supply-chain traceability and product-recall demonstration. MySQL
 - Shipment listing, draft creation and dispatch workspace at `/shipments`.
 - Per-shipment MongoDB audit history from the shipment workspace for roles with audit permission.
 - Shipment audit and recall audit records appended to MongoDB after successful MySQL operations.
+
+## Web routes
+
+- `/login` — sign in with an administrator-provisioned account.
+- `/` — operations overview with current batch, recall and shipment metrics.
+- `/batches` — search batches by batch/product name, filter by status and page through results.
+- `/batches/[id]` — view batch details, raw-material suppliers and downstream distribution movements.
+- `/recalls` — review recall history and, for authorized roles, open a recall for a completed batch.
+- `/recalls/[id]` — inspect affected quantities and distribution movements for a recall.
+- `/shipments` — create drafts, dispatch validated shipments and view MongoDB audit events when permitted.
+
+Production batch records are the inventory view in this project; there is no separate inventory CRUD route in the backend. The dashboard and `/batches` page show the batch quantities and statuses maintained in MySQL.
 
 ## API routes
 
